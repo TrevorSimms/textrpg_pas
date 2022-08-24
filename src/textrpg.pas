@@ -3,10 +3,10 @@ uses crt;
 
 const
     instructions = '(A|a) for Attack'#10'(H|h) for heal';
-    usrPrompt = 'What will you do? ';
     startVal = 100;
     attackVal = 10;
     healVal = 5;
+    castVal = 0;
 
 type
     player = record
@@ -23,18 +23,13 @@ var
     usrInput: string;
     hero, enemy: player;
 
-procedure initGame(var x,y: player);
+procedure initPlayer(var x: player; hp,atk,wmp,bmp: integer; plName: string);
 begin
-    x.health := startVal;
-    x.attack := attackVal;
-    x.wmgPower := healVal;
-    y.health := startVal;
-    y.attack := attackVal
-end;
-
-procedure namePlayer(str: string; var myStr: string);
-begin
-    myStr := str
+    x.health := hp;
+    x.attack := atk;
+    x.wmgPower := wmp;
+    x.bmgPower := bmp;
+    x.plName := plName;
 end;
 
 procedure plAttack(var x,y: integer; s: string);
@@ -85,16 +80,15 @@ begin
     clrscr;
     bRun := true;
     bDebug := isDebug;
-    initGame(hero, enemy);
-    namePlayer('hero', hero.plName);
-    namePlayer('enemy', enemy.plName); 
+    initPlayer(hero, startVal, attackVal, healVal, castVal, 'hero');
+    initPlayer(enemy, startVal, attackVal, healVal, castVal, 'enemy');
     writeln(instructions);
     while bRun do 
     begin
         writeln('Health: ', hero.health);
         if bDebug then
             writeln('Enemy Health: ', enemy.health);
-        write(usrPrompt);
+        write('What will you do? ');
         readln(usrInput);
         case usrInput of
             'a': plAttack(enemy.health, hero.attack, enemy.plName);

@@ -1,5 +1,5 @@
-program textrpg(clsarg);
-uses crt;
+program textrpg;
+uses crt, PlayerLib;
 
 const
     instructions = '(A|a) for Attack'#10'(H|h) for heal';
@@ -8,41 +8,11 @@ const
     healVal = 5;
     castVal = 0;
 
-type
-    player = record
-        health: integer;
-        attack: integer;
-        wmgPower: integer;
-        bmgPower: integer;
-        plName: string;
-    end;
-
 var
     bRun: Boolean;
     bDebug: Boolean;
     usrInput: string;
     hero, enemy: player;
-
-procedure initPlayer(var x: player; hp,atk,wmp,bmp: integer; plName: string);
-begin
-    x.health := hp;
-    x.attack := atk;
-    x.wmgPower := wmp;
-    x.bmgPower := bmp;
-    x.plName := plName;
-end;
-
-procedure plAttack(var x,y: integer; s: string);
-begin
-    x := x - y;
-    writeln(y,' damage to ',s,'!');
-end;
-
-procedure plHeal(var health,val: integer; var plName: string);
-begin
-    health := health + Val;
-    writeln('Restored ',health,' health to ',plName,'!');
-end;
 
 function isDebug: Boolean;
 begin
@@ -76,12 +46,14 @@ begin
         isBattleOver := true;
 end;
 
+{ main function }
 begin
-    clrscr;
     bRun := true;
     bDebug := isDebug;
     initPlayer(hero, startVal, attackVal, healVal, castVal, 'hero');
     initPlayer(enemy, startVal, attackVal, healVal, castVal, 'enemy');
+
+    clrscr;
     writeln(instructions);
     while bRun do 
     begin
@@ -97,7 +69,6 @@ begin
             writeln('Not a valid action.');
         end;
         plAttack(hero.health, enemy.attack, hero.plName);
-        // make function
         bRun := isBattleOver(hero.health, enemy.health);
     end;
     if bDebug then

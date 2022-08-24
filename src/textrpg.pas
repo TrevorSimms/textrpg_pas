@@ -1,4 +1,4 @@
-program textrpg;
+program textrpg(clsarg);
 uses crt;
 
 const
@@ -12,31 +12,49 @@ type
     player = record
         health: integer;
         attack: integer;
+        wmgPower: integer;
+        bmgPower: integer;
+        plName: string;
     end;
 
 var
     bRun: Boolean;
+    bDebug: Boolean;
     usrInput: string;
     hero, enemy: player;
 
-procedure initGame;
+procedure initGame(var x,y: player);
 begin
-    hero.health := startVal;
-    hero.attack := attackVal;
-    enemy.health := startVal;
-    enemy.attack := attackVal
+    x.health := startVal;
+    x.attack := attackVal;
+    x.wmgPower := healVal;
+    y.health := startVal;
+    y.attack := attackVal
 end;
 
-procedure heroAttack;
+procedure namePlayer(str: string; var myStr: string);
 begin
-    enemy.health := enemy.health - hero.attack;
-    writeln(hero.attack,' damage to enemy!');
+    myStr := str
 end;
 
-procedure heroHeal;
+procedure plAttack(var x,y: integer; s: string);
 begin
-    hero.health := hero.health + healVal;
-    writeln('Restored ',hero.health,' health!');
+    x := x - y;
+    writeln(y,' damage to ',s,'!');
+end;
+
+procedure plHeal(var health,val: integer; var plName: string);
+begin
+    health := health + Val;
+    writeln('Restored ',health,' health to ',plName,'!');
+end;
+
+function isDebug: Boolean;
+begin
+    if (ParamCount > 0) and (ParamStr(1) = 'debug') then
+        isDebug := true
+    else
+        isDebug := false
 end;
 
 function isDead(val: integer): Boolean;
@@ -47,43 +65,49 @@ begin
         isDead := false
 end;
 
-function battleOver(val1,val2: integer): Boolean;
+function isBattleOver(val1,val2: integer): Boolean;
 begin
     if isDead(val1) then
     begin
         writeln('You died, oh noes :(');
-        battleOver := false;
+        isBattleOver := false;
     end
     else if isDead(val2) then
     begin
         writeln('You won, good job :D');
-        battleOver := false;
+        isBattleOver := false;
     end
     else
-        battleOver := true;
+        isBattleOver := true;
 end;
 
 begin
     clrscr;
     bRun := true;
-    initGame;
+    bDebug := isDebug;
+    initGame(hero, enemy);
+    namePlayer('hero', hero.plName);
+    namePlayer('enemy', enemy.plName); 
     writeln(instructions);
     while bRun do 
     begin
         writeln('Health: ', hero.health);
+        if bDebug then
+            writeln('Enemy Health: ', enemy.health);
         write(usrPrompt);
         readln(usrInput);
         case usrInput of
-            'a': heroAttack;
-            'h': heroHeal;
+            'a': plAttack(enemy.health, hero.attack, enemy.plName);
+            'h': plHeal(hero.health, hero.wmgPower, hero.plName);
         else
             writeln('Not a valid action.');
         end;
-        hero.health := hero.health - enemy.attack;
-        writeln('10 damage to Hero.');
+        plAttack(hero.health, enemy.attack, hero.plName);
         // make function
-        bRun := battleOver(hero.health,enemy.health);
+        bRun := isBattleOver(hero.health, enemy.health);
     end;
+    if bDebug then
+        writeln('Final Hero Health: ',hero.health,#10'Final Enemy Health: ',enemy.health);
     readkey;
     clrscr;
 end.

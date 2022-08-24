@@ -9,18 +9,12 @@ implementation
 
 function isDebug: Boolean;
 begin
-    if (ParamCount > 0) and (ParamStr(1) = 'debug') then
-        isDebug := true
-    else
-        isDebug := false
+    isDebug := (ParamCount > 0) and (ParamStr(1) = 'debug');
 end;
 
 function isDead(val: integer): Boolean;
 begin
-    if val < 1 then
-        isDead := true
-    else
-        isDead := false
+    isDead := val < 1;
 end;
 
 function isBattleOver(val1,val2: integer): Boolean;

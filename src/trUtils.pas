@@ -22,15 +22,15 @@ begin
     if isDead(val1) then
     begin
         writeln('You died, oh noes :(');
-        isBattleOver := false;
+        isBattleOver := true;
     end
     else if isDead(val2) then
     begin
         writeln('You won, good job :D');
-        isBattleOver := false;
+        isBattleOver := true;
     end
     else
-        isBattleOver := true;
+        isBattleOver := false;
 end;
 
 end.

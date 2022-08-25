@@ -2,7 +2,8 @@ program textrpg;
 uses crt, PlayerLib, trUtils;
 
 const
-    instructions = '(A|a) for Attack'#10'(H|h) for heal'#10'Press any key to continue...';
+    keyContQuery = 'Press any key to continue...';
+    instructions = '(A|a) for Attack'#10'(H|h) for heal'#10 + keyContQuery;
     startVal = 100;
     manaVal = 30;
     attackVal = 10;
@@ -15,37 +16,54 @@ var
     usrInput: string;
     hero, enemy: player;
 
-{ main function }
+// commands to run before gameloop
+procedure initGame;
 begin
     bRun := true;
     bDebug := isDebug;
-    initPlayer(hero, startVal, manaVal, attackVal, healVal, castVal, 'hero');
-    initPlayer(enemy, startVal, manaVal, attackVal, healVal, castVal, 'enemy');
-
+    // initialize player entities here
+    initPlayer(hero, startVal, manaVal, attackVal, healVal, castVal, 'Hero');
+    initPlayer(enemy, startVal, manaVal, attackVal, healVal, castVal, 'Enemy');
     clrscr;
     writeln(instructions);
     readkey;
+end;
+
+
+procedure battleStage(var x, y: player; dbug: Boolean);
+begin
+    clrscr;
+    writeln('Health: ', x.health);
+    if bDebug then
+        writeln(y.plName,' Health: ', y.health);
+    write('What will you do? ');
+end;
+
+//procedure 
+
+{ main function }
+begin
+    initGame;
     while bRun do 
     begin
-        clrscr;
-        writeln('Health: ', hero.health);
-        if bDebug then
-            writeln('Enemy Health: ', enemy.health);
-        write('What will you do? ');
+        battleStage(hero, enemy, bDebug);
         readln(usrInput);
-        case usrInput of
-            'a': plAttack(enemy, hero);
-            'h': plHeal(hero);
-        else
-            writeln('Not a valid action.');
-        end;
-        plAttack(hero, enemy);
-        bRun := isBattleOver(hero.health, enemy.health);
-        writeln('...');
+        playerMove(hero, enemy, usrInput);
+        playerMove(enemy, hero, 'a'); //enemy move
+        bRun := not isBattleOver(hero.health, enemy.health);
+        writeln(keyContQuery);
         readkey;
     end;
     if bDebug then
-        writeln('Final Hero Health: ',hero.health,#10'Final Enemy Health: ',enemy.health);
-    readkey;
+    begin
+        writeln(
+        'Debug Info:',
+        #10'Final ',hero.plName,' Health: ',hero.health,
+        #10'Final ',enemy.plName,' Health: ',enemy.health
+        );
+        writeln(keyContQuery);
+        readkey;
+    end;
+
     clrscr;
 end.

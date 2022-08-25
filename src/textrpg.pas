@@ -2,13 +2,15 @@ program textrpg;
 uses crt, PlayerLib, trUtils;
 
 const
-    keyContQuery = 'Press any key to continue...';
-    instructions = '(A|a) for Attack'#10'(H|h) for heal'#10 + keyContQuery;
-    startVal = 100;
-    manaVal = 30;
-    attackVal = 10;
-    healVal = 11;
-    castVal = 0;
+    KEY_CONST_QUERY = 'Press any key to continue...';
+    INSTRUCTIONS = '(A|a) for Attack'#10'(H|h) for heal'#10 + KEY_CONST_QUERY;
+    START_VAL = 100;
+    MANA_VAL = 12;
+    ATTACK_VAL = 10;
+    HEAL_VAL = 15;
+    CAST_VAL = 0;
+    ACC_VAL = 10;
+    LUCK_VAL = 20;
 
 var
     bRun: Boolean;
@@ -21,11 +23,12 @@ procedure initGame;
 begin
     bRun := true;
     bDebug := isDebug;
+    randomize;
     // initialize player entities here
-    initPlayer(hero, startVal, manaVal, attackVal, healVal, castVal, 'Hero');
-    initPlayer(enemy, startVal, manaVal, attackVal, healVal, castVal, 'Enemy');
+    initPlayer(hero, START_VAL, MANA_VAL, ATTACK_VAL, HEAL_VAL, CAST_VAL, ACC_VAL, LUCK_VAL, 'Hero');
+    initPlayer(enemy, START_VAL, MANA_VAL, ATTACK_VAL, HEAL_VAL, CAST_VAL, ACC_VAL, LUCK_VAL, 'Enemy');
     clrscr;
-    writeln(instructions);
+    writeln(INSTRUCTIONS);
     readkey;
 end;
 
@@ -51,7 +54,7 @@ begin
         playerMove(hero, enemy, usrInput);
         playerMove(enemy, hero, 'a'); //enemy move
         bRun := not isBattleOver(hero.health, enemy.health);
-        writeln(keyContQuery);
+        writeln(KEY_CONST_QUERY);
         readkey;
     end;
     if bDebug then
@@ -61,7 +64,7 @@ begin
         #10'Final ',hero.plName,' Health: ',hero.health,
         #10'Final ',enemy.plName,' Health: ',enemy.health
         );
-        writeln(keyContQuery);
+        writeln(KEY_CONST_QUERY);
         readkey;
     end;
 

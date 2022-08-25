@@ -3,12 +3,16 @@ uses crt, PlayerLib, trUtils;
 
 const
     KEY_CONST_QUERY = 'Press any key to continue...';
-    INSTRUCTIONS = '(A|a) for Attack'#10'(H|h) for heal'#10 + KEY_CONST_QUERY;
+    INSTRUCTIONS = 
+        '(A|a) for Attack,'#9' 10 damage'#10 +
+        '(H|h) for Heal -3,'#9' mana'#10 +
+        '(T|t) for Thunder Attack,'#9' -9 mana'#10 + 
+        KEY_CONST_QUERY;
     START_VAL = 100;
     MANA_VAL = 12;
     ATTACK_VAL = 10;
     HEAL_VAL = 15;
-    CAST_VAL = 0;
+    CAST_VAL = 50;
     ACC_VAL = 10;
     LUCK_VAL = 20;
 
@@ -36,7 +40,7 @@ end;
 procedure battleStage(var x, y: player; dbug: Boolean);
 begin
     clrscr;
-    writeln('Health: ', x.health);
+    writeln(x.plName,' Health: ', x.health);
     if bDebug then
         writeln(y.plName,' Health: ', y.health);
     write('What will you do? ');

@@ -16,6 +16,7 @@ type
 procedure initPlayer(var x: player; hp,mp,atk,wmp,bmp,acc,crit: integer; plName: string);
 procedure plAttack(var x,y: player);
 procedure plHeal(var x: player);
+procedure plThunder(var x,y: player);
 procedure playerMove(var x,y: player; str: string);
 
 implementation
@@ -42,8 +43,9 @@ begin
     begin
         x.health := x.health - (y.attack * 2);
         writeln(
-        'Critical hit!!!!'#10,
-        (y.attack * 2),' damage to ',x.plName,'!'); 
+            'Critical hit!!!!'#10,
+            (y.attack * 2),' damage to ',x.plName,'!'
+        ); 
     end
     else
     begin
@@ -67,11 +69,33 @@ begin
     writeln('Mana remaining: ',x.mana);
 end;
 
+procedure plThunder(var x,y: player);
+const
+    MANA_COST = 9;
+begin
+    if x.mana >= MANA_COST then 
+    begin
+        x.health := x.health - y.bmgPower;
+        writeln(
+            'Cast Thunder!'#10,
+            y.bmgPower,' damage to ',x.plName,'!'
+        );
+        y.mana := y.mana - MANA_COST;
+    end
+    else 
+        writeln('Not enough mana!');
+    writeln('Mana remaining: ',y.mana);
+end;
+
 procedure playerMove(var x,y: player; str: string);
 begin
     case str of
         'a': plAttack(y, x);
+        'A': plAttack(y, x);
         'h': plHeal(x);
+        'H': plHeal(x);
+        't': plThunder(y, x);
+        'T': plThunder(y, x);
     else
         writeln('Not a valid action.');
     end

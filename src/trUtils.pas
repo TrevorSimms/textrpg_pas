@@ -1,9 +1,12 @@
 unit trUtils;
 interface
+uses EntityLib, crt;
 
 function isDebug: Boolean;
 function isDead(val: integer): Boolean;
 function isBattleOver(val1,val2: integer): Boolean;
+
+procedure dispTurn(var x, y: entity; dbug: Boolean; var opt: string);
 
 implementation
 
@@ -31,6 +34,16 @@ begin
     end
     else
         isBattleOver := false;
+end;
+
+procedure dispTurn(var x, y: entity; dbug: Boolean; var opt: string);
+begin
+    clrscr;
+    writeln(x.entName,' Health: ', x.health,#10,x.entName,' Mana: ', x.mana);
+    if dbug then
+        writeln(y.entName,' Health: ', y.health,#10,y.entName,' Mana: ', y.mana);
+    write('What will you do? ');
+    readln(opt);
 end;
 
 end.
